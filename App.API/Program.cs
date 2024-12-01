@@ -1,4 +1,11 @@
+using Repositories.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddRepositories(builder.Configuration);
+// Db ayarlamaları burda yapılır.
+
 
 // Add services to the container.
 
