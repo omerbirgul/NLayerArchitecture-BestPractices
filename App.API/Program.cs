@@ -1,10 +1,11 @@
 using Repositories.Extensions;
+using Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddRepositories(builder.Configuration);
-// Db ayarlamaları burda yapılır.
+builder.Services.AddRepositories(builder.Configuration).AddService(builder.Configuration);
+// Repository ve Service içinde yazdığımız extension class'ları kullanmak için bu kodu kullandık.
 
 
 // Add services to the container.
