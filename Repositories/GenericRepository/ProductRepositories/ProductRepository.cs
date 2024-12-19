@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 
 namespace Repositories.GenericRepository.ProductRepositories;
@@ -10,9 +11,9 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
         _context = context;
     }
 
-    public List<Product> GetTopPriceProductsAsync(int count)
+    public async Task<List<Product>> GetTopPriceProductsAsync(int count)
     {
-        return _context.Products.OrderByDescending(x => x.Price).Take(5).ToList();
+        return await _context.Products.OrderByDescending(x => x.Price).Take(5).ToListAsync();
     }
 }
 
