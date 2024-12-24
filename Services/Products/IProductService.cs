@@ -7,8 +7,9 @@ namespace Services.Products;
 public interface IProductService
 {
     Task<ServiceResult<List<ProductDto>>> GetTopPriceProductAsync(int count);
-    Task<ServiceResult<ProductDto>> GetProductById(int id);
-    Task<ServiceResult<CreateProductResponse>> CreateProductAsync(CreateProductRequest productRequest);
-    Task<ServiceResult> UpdateProductAsync(int id, UpdateProductRequest updateProductRequest);
-    Task<ServiceResult> DeleteProductAsync(int id);
+    Task<ServiceResult<ProductDto?>> GetById(int id);
+    Task<ServiceResult<List<ProductDto>>> GetAllAsync();
+    Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest productRequest);
+    Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest updateProductRequest);
+    Task<ServiceResult> DeleteAsync(int id);
 }

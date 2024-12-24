@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.GenericRepository.ProductRepositories;
 using Repositories.UnitOfWork;
@@ -26,7 +27,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         };
     }
 
-    public async Task<ServiceResult<ProductDto>> GetProductById(int id)
+    public async Task<ServiceResult<ProductDto?>> GetById(int id)
     {
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
@@ -35,10 +36,18 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         }
 
         var productAsDto = new ProductDto(product!.Id, product.Name, product.Price, product.Stock);
-        return ServiceResult<ProductDto>.Success(productAsDto, HttpStatusCode.OK);
+        return ServiceResult<ProductDto>.Success(productAsDto, HttpStatusCode.OK)!;
     }
 
-    public async Task<ServiceResult<CreateProductResponse>> CreateProductAsync(CreateProductRequest productRequest)
+    public async Task<ServiceResult<List<ProductDto>>> GetAllAsync()
+    {
+        var products = await _productRepository.GetAll().ToListAsync();
+        var productsAsDto = products
+            .Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock)).ToList();
+        return ServiceResult<List<ProductDto>>.Success(productsAsDto);
+    }
+
+    public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest productRequest)
     {
         var product = new Product()
         {
@@ -52,7 +61,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         return ServiceResult<CreateProductResponse>.Success(new CreateProductResponse(product.Id));
     }
     
-    public async Task<ServiceResult> UpdateProductAsync(int id, UpdateProductRequest updateProductRequest)
+    public async Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest updateProductRequest)
     {
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
@@ -60,7 +69,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
             ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
         }
 
-        product.Name = updateProductRequest.Name;
+        product!.Name = updateProductRequest.Name;
         product.Price = updateProductRequest.Price;
         product.Stock = updateProductRequest.Stock;
 
@@ -69,7 +78,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         return ServiceResult.Success(HttpStatusCode.NoContent);
     }
 
-    public async Task<ServiceResult> DeleteProductAsync(int id)
+    public async Task<ServiceResult> DeleteAsync(int id)
     {
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
