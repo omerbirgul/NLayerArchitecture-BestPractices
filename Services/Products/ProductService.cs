@@ -9,9 +9,16 @@ using Services.Products.Dtos.Responses;
 
 namespace Services.Products;
 
-public class ProductService(IProductRepository _productRepository, IUnitOfWork _unitOfWork): IProductService
+public class ProductService: IProductService
 {
+    private readonly IProductRepository _productRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
+    public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork)
+    {
+        _productRepository = productRepository;
+        _unitOfWork = unitOfWork;
+    }
 
     public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductAsync(int count)
     {
@@ -32,7 +39,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
         {
-            ServiceResult<ProductDto>.Fail("Product not found", HttpStatusCode.NotFound);
+            return ServiceResult<ProductDto?>.Fail("Product not found", HttpStatusCode.NotFound);
         }
 
         var productAsDto = new ProductDto(product!.Id, product.Name, product.Price, product.Stock);
@@ -66,7 +73,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
         {
-            ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
+            return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
         }
 
         product!.Name = updateProductRequest.Name;
@@ -83,10 +90,10 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
         {
-            ServiceResult.Fail("product not found", HttpStatusCode.NotFound);
+            return ServiceResult.Fail("product not found", HttpStatusCode.NotFound);
         }
         _productRepository.Delete(product!);
         await _unitOfWork.SaveChangesAsync();
-        return ServiceResult.Success();
+        return ServiceResult.Success(HttpStatusCode.NoContent);
     }
 }
