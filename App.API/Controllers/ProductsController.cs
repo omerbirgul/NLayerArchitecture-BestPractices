@@ -22,6 +22,13 @@ namespace App.API.Controllers
             return CreateActionResult(serviceResult);
         }
 
+        [HttpGet("{pageNumber}/{pageSize}")]
+        public async Task<IActionResult> GetPageAll(int pageNumber, int pageSize)
+        {
+            var serviceResult = await _productService.GetPagedListAsync(pageNumber, pageSize);
+            return CreateActionResult(serviceResult);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductRequest request)
         {
