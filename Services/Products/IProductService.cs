@@ -12,5 +12,6 @@ public interface IProductService
     Task<ServiceResult<List<ProductDto>>> GetPagedListAsync(int pageNumber, int pageSize);
     Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest productRequest);
     Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest updateProductRequest);
+    Task<ServiceResult> UpdateStockAsync(UpdateProductStockRequest request);
     Task<ServiceResult> DeleteAsync(int id);
 }

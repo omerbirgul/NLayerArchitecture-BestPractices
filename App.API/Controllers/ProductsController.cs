@@ -43,6 +43,13 @@ namespace App.API.Controllers
             return CreateActionResult(serviceResult);
         }
 
+        [HttpPatch("stock")]
+        public async Task<IActionResult> UpdateStock(UpdateProductStockRequest request)
+        {
+            var serviceResult = await _productService.UpdateStockAsync(request);
+            return CreateActionResult(serviceResult);
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
