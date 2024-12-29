@@ -11,12 +11,12 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
     public CreateProductRequestValidator(IProductRepository productRepository)
     {
         _productRepository = productRepository;
-        
+
         RuleFor(x => x.Name)
             .NotNull().WithMessage("Product Name Required!")
             .NotEmpty().WithMessage("Product Name Required!")
-            .Length(3, 10).WithMessage("Product Name Length Must Be 3-10 Characters")
-            .Must(MustUniqueProductName).WithMessage("Product Name Already Exist");
+            .Length(3, 10).WithMessage("Product Name Length Must Be 3-10 Characters");
+            // .Must(MustUniqueProductName).WithMessage("Product Name Already Exist");
         
         // Price Validation
         RuleFor(x => x.Price)
@@ -28,10 +28,14 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
     }
 
 
-    private bool MustUniqueProductName(string productName)
-    {
-        return !(_productRepository.Where(p => p.Name == productName).Any());
-        // false => hata var
-        // true => hata yok
-    }
+    #region Sync Way Business Validation
+
+    // private bool MustUniqueProductName(string productName)
+    // {
+    //     return !(_productRepository.Where(p => p.Name == productName).Any());
+    //     // false => hata var
+    //     // true => hata yok
+    // }
+
+    #endregion
 }
