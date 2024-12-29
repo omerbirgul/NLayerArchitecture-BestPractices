@@ -102,7 +102,6 @@ public class ProductService: IProductService
 
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
-        throw new Exception("database Error");
         var existProduct = await _productRepository.Where(x => x.Name == request.Name).AnyAsync();
         if (existProduct)
         {
@@ -122,7 +121,7 @@ public class ProductService: IProductService
             .SuccessAsCreated(new CreateProductResponse(product.Id), $"api/products/{product.Id}");
     }
     
-    public async Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest updateProductRequest)
+    public async Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest request)
     {
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
@@ -130,9 +129,16 @@ public class ProductService: IProductService
             return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
         }
 
-        product.Name = updateProductRequest.Name;
-        product.Price = updateProductRequest.Price;
-        product.Stock = updateProductRequest.Stock;
+        bool isProductExist = await _productRepository
+            .Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+        if (isProductExist)
+        {
+            return ServiceResult.Fail("Product name already exist");
+        }
+
+        product.Name = request.Name;
+        product.Price = request.Price;
+        product.Stock = request.Stock;
 
         _productRepository.Update(product);
         await _unitOfWork.SaveChangesAsync();
