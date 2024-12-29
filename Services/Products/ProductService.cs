@@ -107,14 +107,8 @@ public class ProductService: IProductService
         {
             return ServiceResult<CreateProductResponse>.Fail("Product Already Exist");
         }
-        
-        var product = new Product()
-        {
-            Name = request.Name,
-            Price = request.Price,
-            Stock = request.Stock
-        };
 
+        var product = _mapper.Map<Product>(request);
         await _productRepository.AddAsync(product);
         await _unitOfWork.SaveChangesAsync();
         return ServiceResult<CreateProductResponse>
@@ -135,11 +129,8 @@ public class ProductService: IProductService
         {
             return ServiceResult.Fail("Product name already exist");
         }
-
-        product.Name = request.Name;
-        product.Price = request.Price;
-        product.Stock = request.Stock;
-
+        
+        product = _mapper.Map(request, product);
         _productRepository.Update(product);
         await _unitOfWork.SaveChangesAsync();
         return ServiceResult.Success(HttpStatusCode.NoContent);
