@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
 using Repositories.GenericRepository.ProductRepositories;
 using Repositories.UnitOfWork;
+using Services.ExceptionHandlers;
 using Services.Products.Dtos;
 using Services.Products.Dtos.Requests;
 using Services.Products.Dtos.Responses;
@@ -101,6 +102,7 @@ public class ProductService: IProductService
 
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
+        throw new Exception("database Error");
         var existProduct = await _productRepository.Where(x => x.Name == request.Name).AnyAsync();
         if (existProduct)
         {
