@@ -66,13 +66,19 @@ public class ProductService: IProductService
         return ServiceResult<List<ProductDto>>.Success(productsAsDto);
     }
 
-    public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest productRequest)
+    public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
+        var existProduct = await _productRepository.Where(x => x.Name == request.Name).AnyAsync();
+        if (existProduct)
+        {
+            return ServiceResult<CreateProductResponse>.Fail("Product Already Exist");
+        }
+        
         var product = new Product()
         {
-            Name = productRequest.Name,
-            Price = productRequest.Price,
-            Stock = productRequest.Stock
+            Name = request.Name,
+            Price = request.Price,
+            Stock = request.Stock
         };
 
         await _productRepository.AddAsync(product);
