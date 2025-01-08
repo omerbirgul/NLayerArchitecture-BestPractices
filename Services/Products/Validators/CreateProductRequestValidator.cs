@@ -22,6 +22,12 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
         RuleFor(x => x.Price)
             .GreaterThan(0).WithMessage("Product Price Must Be Greater Than 0");
         
+        // CategoryId Validation
+        RuleFor(x => x.CategoryId)
+            .NotNull().WithMessage("CategoryId Required!")
+            .NotEmpty().WithMessage("CategoryId Required!")
+            .GreaterThan(0).WithMessage("CategoryId Must Be greater Than 0");
+        
         // Stock Validation
         RuleFor(x => x.Stock)
             .InclusiveBetween(1, 100).WithMessage("Stock count must be between 1-100");

@@ -2,6 +2,7 @@ using System.Net;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Entities;
+using Repositories.GenericRepository.CategoryRepositories;
 using Repositories.GenericRepository.ProductRepositories;
 using Repositories.UnitOfWork;
 using Services.ExceptionHandlers;
@@ -14,14 +15,16 @@ namespace Services.Products;
 public class ProductService: IProductService
 {
     private readonly IProductRepository _productRepository;
+    private readonly ICategoryRepository _categoryRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper)
+    public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper, ICategoryRepository categoryRepository)
     {
         _productRepository = productRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _categoryRepository = categoryRepository;
     }
 
     public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductAsync(int count)
@@ -106,6 +109,12 @@ public class ProductService: IProductService
         if (existProduct)
         {
             return ServiceResult<CreateProductResponse>.Fail("Product Already Exist");
+        }
+
+        var isCategoryExist = await _categoryRepository.GetByIdAsync(request.CategoryId);
+        if (isCategoryExist is null)
+        {
+            return ServiceResult<CreateProductResponse>.Fail("Category not found");
         }
 
         var product = _mapper.Map<Product>(request);

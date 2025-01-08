@@ -14,6 +14,12 @@ public class UpdateProductRequestValidator : AbstractValidator<UpdateProductRequ
 
         RuleFor(x => x.Price)
             .GreaterThan(0).WithMessage("Price must be greater than 0");
+        
+        // CategoryId Validation
+        RuleFor(x => x.CategoryId)
+            .NotNull().WithMessage("CategoryId Required!")
+            .NotEmpty().WithMessage("CategoryId Required!")
+            .GreaterThan(0).WithMessage("CategoryId Must Be greater Than 0");
 
         RuleFor(x => x.Stock)
             .InclusiveBetween(1, 100).WithMessage("Stock must be 1-100");
