@@ -3,7 +3,7 @@ using Repositories.Entities;
 using Services.Products.Dtos;
 using Services.Products.Dtos.Requests;
 
-namespace Services.Mapping;
+namespace Services.Products.Mapping;
 
 public class MappingProfile : Profile
 {
