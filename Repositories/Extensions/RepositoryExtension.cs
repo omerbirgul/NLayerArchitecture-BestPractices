@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Repositories.GenericRepository;
 using Repositories.GenericRepository.CategoryRepositories;
 using Repositories.GenericRepository.ProductRepositories;
+using Repositories.Interceptors;
 using Repositories.UnitOfWork;
 
 namespace Repositories.Extensions;
@@ -21,6 +22,8 @@ public static class RepositoryExtension
             {
                 sqlServerOptionsAction.MigrationsAssembly(typeof(RepositoryAssembly).Assembly.FullName);
             });
+
+            opt.AddInterceptors(new AuditDbContextInterceptor());
         });
 
         services.AddScoped<IProductRepository, ProductRepository>();
