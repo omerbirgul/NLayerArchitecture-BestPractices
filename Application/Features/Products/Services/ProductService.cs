@@ -1,4 +1,5 @@
 using System.Net;
+using Application.Contracts.Caching;
 using Application.Contracts.Persistence;
 using Application.Features.Products.Create;
 using Application.Features.Products.Dtos;
@@ -14,13 +15,16 @@ public class ProductService: IProductService
     private readonly ICategoryRepository _categoryRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ICacheService _cacheService;
 
-    public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper, ICategoryRepository categoryRepository)
+    public ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper,
+        ICategoryRepository categoryRepository, ICacheService cacheService)
     {
         _productRepository = productRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _categoryRepository = categoryRepository;
+        _cacheService = cacheService;
     }
 
     public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductAsync(int count)
@@ -45,6 +49,7 @@ public class ProductService: IProductService
 
     public async Task<ServiceResult<ProductDto?>> GetById(int id)
     {
+        
         var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
         {

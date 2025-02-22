@@ -1,4 +1,5 @@
 using System.Reflection;
+using Application.Contracts.Caching;
 using Application.Features.Categories.Services;
 using Application.Features.Products.Services;
 using FluentValidation;
@@ -16,7 +17,8 @@ public static class ApplicationExtensions
         // validation kendimiz yazmak istediğimiz için .Net default validation özelliğini kapattık.
         services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
         
-        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductService, ProductServiceProxy>();
+        services.AddScoped<ProductService>();
         services.AddScoped<ICategoryService, CategoryService>();
         
         services.AddFluentValidationAutoValidation();
