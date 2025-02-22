@@ -5,9 +5,7 @@ using Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
-// validation kendimiz yazmak istediğimiz için .Net default validation özelliğini kapattık.
+
 
 builder.Services.AddRepositories(builder.Configuration).AddService(builder.Configuration);
 // Repository ve Service içinde yazdığımız extension class'ları kullanmak için bu kodu kullandık.
